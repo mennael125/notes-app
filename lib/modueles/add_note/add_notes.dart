@@ -25,10 +25,7 @@ class AddNotesScreen extends StatelessWidget {
         create: (BuildContext context) => AddCubit(),
         child: BlocConsumer<AddCubit, AddStates>(
           listener: (context, state) {
-            if (state is AddNoteLoadingState) {
-              const Center(child: CircularProgressIndicator());
 
-            }
 
           },
           builder: (context, state) {
@@ -38,7 +35,9 @@ class AddNotesScreen extends StatelessWidget {
                 context: context,
                 title: 'AddNotes',
               ),
-              body: Padding(
+              body:   state is AddNoteLoadingState?
+    const Center(child: CircularProgressIndicator()):
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Form(
                   key: formKey,

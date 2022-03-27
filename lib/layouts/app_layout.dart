@@ -26,11 +26,8 @@ class NotesAppLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<NotesAppCubit, NotesAppStates>(
       listener: (context, state) {
-        if (state is LogOutLoadingState) {
-          const Center(
-            child: SizedBox(height: 30, child: CircularProgressIndicator()),
-          );
-        }
+
+
       },
       builder: (context, state) {
         CollectionReference notesRef =
@@ -54,7 +51,10 @@ class NotesAppLayout extends StatelessWidget {
               title: Text('Notes App'),
               titleSpacing: 2,
             ),
-            body: Center(
+            body:state is LogOutLoadingState ?
+    const Center(
+    child: SizedBox(height: 30, child: CircularProgressIndicator()),
+    ):Center(
               child: Conditional.single(
                   context: (context),
                   conditionBuilder: (context) => state is LogOutLoadingState,
@@ -114,7 +114,10 @@ class NotesAppLayout extends StatelessWidget {
                                             }
                                           },
                                           key: UniqueKey(),
-                                          child: Row(
+                                          child:  snapshot.data.docs[i]
+                                              .data()[
+                                          'Image'] !=
+                                              null ? Row(
                                             children: [
                                               Container(
                                                 width: 110,
@@ -127,10 +130,7 @@ class NotesAppLayout extends StatelessWidget {
                                                                   .data()[
                                                               'Image'] ==
                                                           null
-                                                      ? Placeholder(
-                                                          color: Colors.black,
-                                                          strokeWidth: 1,
-                                                        )
+                                                      ? const SizedBox()
                                                       : Image.network(
                                                           "${snapshot.data.docs[i].data()['Image']}",
                                                           fit: BoxFit.cover,
@@ -167,6 +167,50 @@ class NotesAppLayout extends StatelessWidget {
                                                                       .docs[i]
                                                                       .data()[
                                                                   'Note'],
+
+                                                          //pass doc id of the note you want to edit
+                                                          docid: snapshot.data
+                                                              .docs[i].id));
+                                                },
+                                                icon: const Icon(
+                                                  Icons.edit,
+                                                ),
+                                                color: defaultColor,
+                                              )
+                                            ],
+                                          ):Row(
+                                            children: [
+
+                                              Expanded(
+                                                child: ListTile(
+                                                    title: Text(
+                                                      '${snapshot.data.docs[i].data()['Title']}',
+                                                      style: TextStyle(
+                                                          fontSize: 26,
+                                                          color: defaultColor),
+                                                    ),
+                                                    subtitle: Text(
+                                                      '${snapshot.data.docs[i].data()['Note']}',
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          color: Colors.grey), overflow: TextOverflow.ellipsis,
+                                                    )),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  navigateTo(
+                                                      context: context,
+                                                      widget: EditNotesScreen(
+                                                          initialValueOfTitle:
+                                                          snapshot.data
+                                                              .docs[i]
+                                                              .data()[
+                                                          'Title'],
+                                                          initialValueOfNote:
+                                                          snapshot.data
+                                                              .docs[i]
+                                                              .data()[
+                                                          'Note'],
 
                                                           //pass doc id of the note you want to edit
                                                           docid: snapshot.data

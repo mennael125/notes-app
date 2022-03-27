@@ -33,16 +33,8 @@ final initialValueOfNote;
         create: (BuildContext context) => EditCubit(),
         child: BlocConsumer<EditCubit, EditStates>(
           listener: (context, state) {
-            if (state is EditNoteLoadingState) {
-              const Center(child: LinearProgressIndicator());
 
-            }
-            if (state is EditNoteSuccessState){
-              backTo(
-                  context: context,
-                  widget:
-                  const NotesAppLayout());
-            }
+
           },
           builder: (context, state) {
             var cubit = EditCubit.get(context);
@@ -51,7 +43,8 @@ final initialValueOfNote;
                 context: context,
                 title: 'EditNotes',
               ),
-              body: Padding(
+              body:state is EditNoteLoadingState ?
+    const Center(child: CircularProgressIndicator()): Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Form(
                   key: formKey,
